@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:dubbo="http://code.alibabatech.com/schema/dubbo"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans
+	http://www.springframework.org/schema/beans/spring-beans-4.0.xsd
+ 	 http://code.alibabatech.com/schema/dubbo
+ 	 http://code.alibabatech.com/schema/dubbo/dubbo.xsd">
+    <!-- 提供方方应用名，用于计算依赖关系，不是匹配条件，不要与消费一样 -->
+    <dubbo:application name="wf_base_rpc_api"/>
+    <dubbo:registry id="registry" address="${dubbo.zookeeper}" client="zkclient" timeout="100000"/>
+    <dubbo:protocol name="dubbo" accepts="2000"/>
+
+    <dubbo:consumer timeout="5000"/>
+    <!--<dubbo:monitor protocol="registry"></dubbo:monitor>-->
+
+    <!--  交易订单信息 -->
+    <bean id="channelRpcService" class="com.wf.base.rpc.impl.ChannelRpcServiceRpcImpl"/>
+    <dubbo:service interface="com.wf.base.rpc.ChannelRpcService" ref="channelRpcService" registry="registry"
+                   delay="-1"/>
+
+    <!-- 用户帐户信息 -->
+    <bean id="configRpcService" class="com.wf.base.rpc.impl.ConfigRpcServiceRpcImpl"/>
+    <dubbo:service interface="com.wf.base.rpc.ConfigRpcService" ref="configRpcService" registry="registry" delay="-1"/>
+
+    <!-- 用户交易信息 -->
+    <bean id="dictRpcService" class="com.wf.base.rpc.impl.DictRpcServiceRpcImpl"/>
+    <dubbo:service interface="com.wf.base.rpc.DictRpcService" ref="dictRpcService" registry="registry" delay="-1"/>
+
+    <!-- 敏感词操作 -->
+    <bean id="sensitiveRpcService" class="com.wf.base.rpc.impl.SensitiveRpcServiceImpl"/>
+    <dubbo:service interface="com.wf.base.rpc.SensitiveRpcService" ref="sensitiveRpcService" registry="registry" delay="-1"/>
+</beans>

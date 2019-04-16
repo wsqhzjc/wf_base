@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.wf.base.dao.BaseSensitiveDao">
+
+    <sql id="baseSensitiveColumns">
+        t.id,
+        t.content,
+        t.create_time,
+        t.update_time,
+        t.delete_flag
+    </sql>
+
+    <sql id="baseSensitiveWhere">
+        t.delete_flag = #{DEL_FLAG_NORMAL}
+        <if test="p.content != null and p.content != ''">
+            AND t.content = #{p.content}
+        </if>
+    </sql>
+
+    <select id="get" resultType="BaseSensitive">
+        SELECT <include refid="baseSensitiveColumns"/>
+        FROM base_sensitive t WHERE id = #{id}
+    </select>
+
+    <select id="findList" resultType="BaseSensitive">
+        SELECT <include refid="baseSensitiveColumns"/>
+        FROM base_sensitive t
+        WHERE <include refid="baseSensitiveWhere"/>
+        ORDER BY id desc LIMIT #{start}, #{length}
+    </select>
+
+    <select id="count" resultType="long">
+        SELECT COUNT(*)
+        FROM base_sensitive t
+        WHERE <include refid="baseSensitiveWhere"/>
+    </select>
+
+    <insert id="insert">
+        INSERT INTO base_sensitive (
+            id,
+            content,
+            create_time,
+            delete_flag
+        ) VALUES (
+            #{id},
+            #{content},
+            #{createTime},
+            #{deleteFlag}
+        )
+    </insert>
+
+    <update id="update">
+        UPDATE base_sensitive SET
+            content = #{content},
+            delete_flag = #{deleteFlag}
+        WHERE id = #{id}
+    </update>
+
+    <delete id="delete">
+        UPDATE base_sensitive SET delete_flag = 1 WHERE ID = #{id}
+    </delete>
+
+    <select id="findAll" resultType="String">
+        SELECT content FROM base_sensitive t WHERE t.delete_flag=0
+    </select>
+</mapper>
+
